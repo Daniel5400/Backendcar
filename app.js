@@ -7,7 +7,7 @@ require('dotenv/config');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
 const corsOptions = {
-    origin: ["https://sogvehiclerentals.netlify.app", "http://localhost:3000","*"]
+    origin: ["https://sogvehiclerentals.netlify.app", "http://localhost:3001", "http://localhost:3000","*"]
   };
 
 // Middleware
