@@ -39,25 +39,66 @@ router.post('/', uploadOptions.single('image'), async (req, res) => {
             return res.status(400).send('No image in the request');
         }
 
+        const { make, model, rental, isAvailable } = req.body;
+
+        // Check if all required fields are provided
+        if (!make || !model || !rental) {
+            return res.status(400).send('Make, model, and rental are required');
+        }
+
         const fileName = file.filename;
         const basePath = `${req.protocol}://${req.get('host')}/public/carsimg/`;
 
+        // Parse 'isAvailable' to a boolean if it's passed as a string
+        const available = isAvailable === 'true';
+
+        // Create and save the car object
         let car = new Car({
-            make: req.body.make,
-            model: req.body.model,
+            make,
+            model,
             image: `${basePath}${fileName}`,
-            rental: req.body.rental,
-            isAvailable: req.body.isAvailable
+            rental,
+            isAvailable: available, // Ensure it's a boolean
         });
 
         car = await car.save();
-        if (!car) return res.status(500).send("The car was not created");
-        res.status(201).json(car); // Use 201 for resource creation
+        if (!car) {
+            return res.status(500).send("The car was not created");
+        }
+
+        res.status(201).json(car); // Resource successfully created
     } catch (err) {
         console.error('Error creating car:', err);
         res.status(500).send('Internal server error');
     }
 });
+
+// router.post('/', uploadOptions.single('image'), async (req, res) => {
+//     try {
+//         const file = req.file;
+//         if (!file) {
+//             return res.status(400).send('No image in the request');
+//         }
+
+//         const fileName = file.filename;
+//         const basePath = `${req.protocol}://${req.get('host')}/public/carsimg/`;
+
+//         let car = new Car({
+//             make: req.body.make,
+//             model: req.body.model,
+//             image: `${basePath}${fileName}`,
+//             rental: req.body.rental,
+//             isAvailable: req.body.isAvailable
+//         });
+
+//         car = await car.save();
+//         if (!car) return res.status(500).send("The car was not created");
+//         res.status(201).json(car); // Use 201 for resource creation
+//     } catch (err) {
+//         console.error('Error creating car:', err);
+//         res.status(500).send('Internal server error');
+//     }
+// });
 
 // Update a car (Vendor only)
 router.put('/:id', uploadOptions.single('image'), async (req, res) => {
