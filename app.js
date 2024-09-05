@@ -6,36 +6,44 @@ const cors = require('cors');
 require('dotenv/config');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
+const corsOptions = {
+    origin: ["https://sogvehiclerentals.netlify.app", "http://localhost:3000","*"]
+  };
 
-app.use(cors());
-app.options('*', cors());
+// Middleware
+app.use(cors(corsOptions));
 
-//middleware
 app.use(express.json());
 app.use(morgan('tiny'));
+
+// Static file serving should be placed before JWT middleware
+app.use('/public/carsimg', express.static(__dirname + '/public/carsimg'));
+
+// JWT Middleware
 app.use(authJwt());
-app.use('/public/uploads', express.static(__dirname + '/public/uploads'));
+
+// Error Handling Middleware
 app.use(errorHandler);
 
-//Routes
-const categoriesRoutes = require('./routes/categories');
-const productsRoutes = require('./routes/products');
+// Routes
+const carsRoutes = require('./routes/cars');
+const bookingsRoutes = require('./routes/bookings');
 const usersRoutes = require('./routes/users');
-const ordersRoutes = require('./routes/orders');
+const paymentsRoutes = require('./routes/payments');
 
 const api = process.env.API_URL;
 
-app.use(`${api}/categories`, categoriesRoutes);
-app.use(`${api}/products`, productsRoutes);
+app.use(`${api}/cars`, carsRoutes);
+app.use(`${api}/bookings`, bookingsRoutes);
 app.use(`${api}/users`, usersRoutes);
-app.use(`${api}/orders`, ordersRoutes);
+app.use(`${api}/payments`, paymentsRoutes);
 
-//Database
+// Database
 mongoose
     .connect(process.env.CONNECTION_STRING, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        dbName: 'eshop-database',
+        dbName: 'rentals-db',
     })
     .then(() => {
         console.log('Database Connection is ready...');
@@ -44,7 +52,7 @@ mongoose
         console.log(err);
     });
 
-//Server
+// Server
 app.listen(3000, () => {
     console.log('server is running http://localhost:3000');
 });
