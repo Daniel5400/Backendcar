@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Payment = require('../models/payment'); // adjust the path as necessary
-const Car = require('../models/Car'); // adjust the path as necessary
+const Car = require('../models/car'); // adjust the path as necessary
 const Booking = require('../models/booking'); // adjust the path as necessary
-const User = require('../models/User'); // adjust the path as necessary
+const User = require('../models/user'); // adjust the path as necessary
 
 // Create a new payment
 router.post('/', async (req, res) => {

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const express = require('express');
 const router = express.Router();
-const Car = require('../models/Car');
+const Car = require('../models/car');
 
 // Define valid file types
 const FILE_TYPE_MAP = {
